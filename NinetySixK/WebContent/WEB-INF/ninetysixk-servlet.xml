@@ -1,0 +1,50 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+  
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages"/>
+    </bean>
+    
+    
+	<bean id="dataSource" class = "org.springframework.jdbc.datasource.DriverManagerDataSource">
+	   <property name = "driverClassName" value = "org.sqlite.JDBC"/>
+	   <property name = "url" value = "jdbc:sqlite:E:/setup/Programming/Database/sqlitestudio-3.1.1/SQLiteStudio/SpringMVCDatabase"/>
+	   <property name = "username" value = ""/>
+	   <property name = "password" value = ""/>
+	</bean>
+	
+	<bean id = "userAuthenticationJDBCTemplate" class = "com.ninetysixk.DAO.UserCredentialsJDBCTemplate">
+	   <property name = "dataSource" ref = "dataSource" />    
+	</bean>
+	<bean id = "userProfilesJDBCTemplate" class = "com.ninetysixk.DAO.UserProfilesJDBCTemplate">
+	   <property name = "dataSource" ref = "dataSource" />    
+	</bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"> 
+	    <property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="jsonMessageConverter"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- Configure bean to convert JSON to POJO and vice versa -->
+	<bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	</bean>	
+	
+	<context:annotation-config> : </context:annotation-config>
+  	<context:component-scan base-package="com.ninetysixk.controller"/>
+  	<context:component-scan base-package="com.ninetysixk.service"/>
+  	<context:component-scan base-package="com.ninetysixk.DAO"/>
+	<mvc:annotation-driven></mvc:annotation-driven>
+</beans>
